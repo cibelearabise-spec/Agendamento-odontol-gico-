@@ -78,8 +78,6 @@
             { id: 3, name: "Dr. Marcos Lima", lastMessage: "Obrigado pela preferência, bom sorriso!", time: "12/05", unread: 0, image: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&q=80&w=200" }
         ];
 
-        let selectedDoctor = dentists[0]; // Padrão
-
         window.onload = () => {
             navigateTo('welcome');
         };
@@ -172,16 +170,17 @@
                         <h1 class="text-2xl font-extrabold text-gray-900 leading-tight">Vamos encontrar<br>seu dentista ideal</h1>
                     </div>
 
+                    <!-- Especialidades com rolagem lateral visível para todos os 5 itens -->
                     <div class="mb-6">
                         <div class="flex space-x-3 overflow-x-auto no-scrollbar py-2">
                             ${specialties.map(spec => `
-                                <div onclick="navigateTo('doctors')" class="min-w-[125px] ${spec.cardBg} p-4 rounded-2xl border border-purple-100 shadow-sm flex flex-col justify-between cursor-pointer hover:shadow-md transition flex-shrink-0">
-                                    <div class="w-10 h-10 rounded-xl ${spec.iconBg} ${spec.text} flex items-center justify-center mb-3">
-                                        <i class="fa-solid ${spec.icon} text-lg"></i>
+                                <div onclick="navigateTo('doctors')" class="min-w-[110px] ${spec.cardBg} p-3.5 rounded-2xl border border-purple-100 shadow-sm flex flex-col justify-between cursor-pointer hover:shadow-md transition flex-shrink-0">
+                                    <div class="w-9 h-9 rounded-xl ${spec.iconBg} ${spec.text} flex items-center justify-center mb-2.5">
+                                        <i class="fa-solid ${spec.icon} text-base"></i>
                                     </div>
                                     <div>
-                                        <h4 class="font-bold text-gray-800 text-xs">${spec.name}</h4>
-                                        <p class="text-[10px] text-gray-500 mt-0.5">${spec.count}</p>
+                                        <h4 class="font-bold text-gray-800 text-xs truncate">${spec.name}</h4>
+                                        <p class="text-[9px] text-gray-500 mt-0.5">${spec.count}</p>
                                     </div>
                                 </div>
                             `).join('')}
@@ -233,13 +232,11 @@
             `;
         }
 
-        // TELA DE DETALHES DO DOUTOR (PROFILE) IDÊNTICA À REFERÊNCIA
         function renderProfileScreen(container, docIndex = 0) {
             const doc = dentists[docIndex !== null ? docIndex : 0];
 
             container.innerHTML = `
                 <div class="p-6 relative">
-                    <!-- Topo: Botão Voltar e Título Doctor Details -->
                     <div class="flex items-center space-x-4 mb-6">
                         <button onclick="navigateTo('home')" class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-700 cursor-pointer hover:bg-gray-200 transition">
                             <i class="fa-solid fa-chevron-left text-xs"></i>
@@ -247,7 +244,6 @@
                         <h2 class="text-base font-bold text-gray-900">Doctor Details</h2>
                     </div>
 
-                    <!-- Card com Foto e Informações Principais -->
                     <div class="flex items-center space-x-4 mb-6">
                         <img src="${doc.image}" alt="${doc.name}" class="w-28 h-28 rounded-2xl object-cover shadow-md flex-shrink-0">
                         <div class="flex-1 min-w-0">
@@ -258,21 +254,18 @@
                         </div>
                     </div>
 
-                    <!-- Abas de Navegação (About / Review / Rating) -->
                     <div class="flex border-b border-gray-100 mb-5">
                         <div class="flex-1 text-center pb-2 border-b-2 border-purple-600 text-purple-700 font-bold text-xs cursor-pointer">About</div>
                         <div class="flex-1 text-center pb-2 text-gray-400 font-medium text-xs cursor-pointer">Review</div>
                         <div class="flex-1 text-center pb-2 text-gray-400 font-medium text-xs cursor-pointer">Rating</div>
                     </div>
 
-                    <!-- Seção Sobre (About) -->
                     <div class="mb-6">
                         <p class="text-xs text-gray-500 leading-relaxed">
                             ${doc.name} is the greatest Dental Specialist since 2002 at ${doc.clinic}. He has achieved several awards for his wonderful contribution in his own field.... <span class="text-purple-600 font-semibold cursor-pointer">More</span>
                         </p>
                     </div>
 
-                    <!-- Card de Mapa Fictício -->
                     <div class="mb-6 rounded-2xl overflow-hidden border border-gray-200 shadow-sm relative h-36 bg-purple-50 flex items-center justify-center">
                         <div class="absolute inset-0 opacity-80 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?auto=format&fit=crop&q=80&w=500')"></div>
                         <div class="absolute inset-0 bg-white/30 backdrop-blur-[1px]"></div>
@@ -282,14 +275,12 @@
                         </div>
                     </div>
 
-                    <!-- Horário de Trabalho (Working time) -->
                     <div class="mb-6">
                         <h4 class="text-xs font-extrabold text-gray-900 mb-1">Working time</h4>
                         <p class="text-xs text-gray-500">Mon-Fri ${doc.time}</p>
                     </div>
                 </div>
 
-                <!-- Botão Fixo na Base: Book an Appointment -->
                 <div class="absolute bottom-16 left-0 right-0 px-6 bg-gradient-to-t from-white via-white/90 to-transparent pt-4 pb-2 z-40">
                     <button onclick="navigateTo('appointments')" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs py-4 rounded-2xl shadow-lg transition transform active:scale-95 cursor-pointer">
                         Book an Appointment
