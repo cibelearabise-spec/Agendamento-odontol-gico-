@@ -68,8 +68,8 @@
         ];
 
         let myAppointments = [
-            { id: 1, doctor: "Dra. Mirna Liz", specialty: "Ortodontia", date: "17 de Maio, 2023", time: "10:30 AM", type: "Consulta presencial", image: "dentista.jpg", status: "Confirmado" },
-            { id: 2, doctor: "Dr. Marcos Lima", specialty: "Endodontia", date: "20 de Maio, 2023", time: "02:00 PM", type: "Avaliação de Canal", image: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&q=80&w=200", status: "Pendente" }
+            { id: 1, doctor: "Dra. Mirna Liz", specialty: "Ortodontia", date: "17 de Maio, 2023", time: "10:30 AM", type: "Messaging", image: "dentista.jpg", status: "Confirmado" },
+            { id: 2, doctor: "Dr. Marcos Lima", specialty: "Endodontia", date: "20 de Maio, 2023", time: "02:00 PM", type: "Voice call", image: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&q=80&w=200", status: "Pendente" }
         ];
 
         let chatConversations = [
@@ -77,6 +77,10 @@
             { id: 2, name: "Dra. Ana Souza", lastMessage: "Combinado então para quinta-feira!", time: "Ontem", unread: 0, image: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=80&w=200" },
             { id: 3, name: "Dr. Marcos Lima", lastMessage: "Obrigado pela preferência, bom sorriso!", time: "12/05", unread: 0, image: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&q=80&w=200" }
         ];
+
+        let selectedDoctor = dentists[0];
+        let selectedTime = "10:30 AM";
+        let selectedFee = "Messaging ($5)";
 
         window.onload = () => {
             navigateTo('welcome');
@@ -103,6 +107,7 @@
                 case 'home': renderHomeScreen(container); break;
                 case 'doctors': renderDoctorsScreen(container); break;
                 case 'profile': renderProfileScreen(container, param); break;
+                case 'booking': renderBookingScreen(container, param); break;
                 case 'appointments': renderAppointmentsScreen(container); break;
                 case 'chat': renderChatScreen(container); break;
                 case 'settings': renderSettingsScreen(container); break;
@@ -170,17 +175,16 @@
                         <h1 class="text-2xl font-extrabold text-gray-900 leading-tight">Vamos encontrar<br>seu dentista ideal</h1>
                     </div>
 
-                    <!-- Especialidades com rolagem lateral visível para todos os 5 itens -->
                     <div class="mb-6">
                         <div class="flex space-x-3 overflow-x-auto no-scrollbar py-2">
                             ${specialties.map(spec => `
-                                <div onclick="navigateTo('doctors')" class="min-w-[110px] ${spec.cardBg} p-3.5 rounded-2xl border border-purple-100 shadow-sm flex flex-col justify-between cursor-pointer hover:shadow-md transition flex-shrink-0">
-                                    <div class="w-9 h-9 rounded-xl ${spec.iconBg} ${spec.text} flex items-center justify-center mb-2.5">
-                                        <i class="fa-solid ${spec.icon} text-base"></i>
+                                <div onclick="navigateTo('doctors')" class="min-w-[125px] ${spec.cardBg} p-4 rounded-2xl border border-purple-100 shadow-sm flex flex-col justify-between cursor-pointer hover:shadow-md transition flex-shrink-0">
+                                    <div class="w-10 h-10 rounded-xl ${spec.iconBg} ${spec.text} flex items-center justify-center mb-3">
+                                        <i class="fa-solid ${spec.icon} text-lg"></i>
                                     </div>
                                     <div>
-                                        <h4 class="font-bold text-gray-800 text-xs truncate">${spec.name}</h4>
-                                        <p class="text-[9px] text-gray-500 mt-0.5">${spec.count}</p>
+                                        <h4 class="font-bold text-gray-800 text-xs">${spec.name}</h4>
+                                        <p class="text-[10px] text-gray-500 mt-0.5">${spec.count}</p>
                                     </div>
                                 </div>
                             `).join('')}
@@ -234,6 +238,7 @@
 
         function renderProfileScreen(container, docIndex = 0) {
             const doc = dentists[docIndex !== null ? docIndex : 0];
+            selectedDoctor = doc;
 
             container.innerHTML = `
                 <div class="p-6 relative">
@@ -282,11 +287,123 @@
                 </div>
 
                 <div class="absolute bottom-16 left-0 right-0 px-6 bg-gradient-to-t from-white via-white/90 to-transparent pt-4 pb-2 z-40">
-                    <button onclick="navigateTo('appointments')" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs py-4 rounded-2xl shadow-lg transition transform active:scale-95 cursor-pointer">
+                    <button onclick="navigateTo('booking')" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs py-4 rounded-2xl shadow-lg transition transform active:scale-95 cursor-pointer">
                         Book an Appointment
                     </button>
                 </div>
             `;
+        }
+
+        // TELA DE AGENDAMENTO (APPOINTMENT) IDÊNTICA À SUA IMAGEM
+        function renderBookingScreen(container) {
+            container.innerHTML = `
+                <div class="p-6 relative">
+                    <!-- Topo: Voltar e Título -->
+                    <div class="flex items-center space-x-4 mb-6">
+                        <button onclick="navigateTo('profile')" class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-700 cursor-pointer hover:bg-gray-200 transition">
+                            <i class="fa-solid fa-chevron-left text-xs"></i>
+                        </button>
+                        <h2 class="text-base font-bold text-gray-900">Appointment</h2>
+                    </div>
+
+                    <!-- Data -->
+                    <h3 class="text-base font-extrabold text-gray-900 mb-4">17 May 2023</h3>
+
+                    <!-- Seletor Morning / Evening -->
+                    <div class="grid grid-cols-2 gap-3 mb-5">
+                        <div class="bg-purple-600 text-white p-3.5 rounded-2xl flex items-center space-x-3 shadow-md cursor-pointer">
+                            <div class="w-8 h-8 rounded-xl bg-white/20 flex items-center justify-center">
+                                <i class="fa-solid fa-sun text-sm"></i>
+                            </div>
+                            <span class="text-xs font-bold">Morning</span>
+                        </div>
+                        <div class="bg-white border border-gray-200 text-gray-600 p-3.5 rounded-2xl flex items-center space-x-3 shadow-sm cursor-pointer hover:bg-gray-50">
+                            <div class="w-8 h-8 rounded-xl bg-gray-100 text-gray-500 flex items-center justify-center">
+                                <i class="fa-solid fa-cloud-sun text-sm"></i>
+                            </div>
+                            <span class="text-xs font-semibold">Evening</span>
+                        </div>
+                    </div>
+
+                    <!-- Horários -->
+                    <div class="grid grid-cols-4 gap-2.5 mb-8">
+                        <div class="bg-white border border-gray-200 text-gray-700 py-3 rounded-xl text-center text-[11px] font-semibold shadow-sm cursor-pointer hover:border-purple-400">09:00 AM</div>
+                        <div class="bg-white border border-gray-200 text-gray-700 py-3 rounded-xl text-center text-[11px] font-semibold shadow-sm cursor-pointer hover:border-purple-400">09:30 AM</div>
+                        <div class="bg-white border border-gray-200 text-gray-700 py-3 rounded-xl text-center text-[11px] font-semibold shadow-sm cursor-pointer hover:border-purple-400">10:00 AM</div>
+                        <div class="bg-purple-600 text-white py-3 rounded-xl text-center text-[11px] font-bold shadow-md cursor-pointer">10:30 AM</div>
+                        <div class="bg-white border border-gray-200 text-gray-700 py-3 rounded-xl text-center text-[11px] font-semibold shadow-sm cursor-pointer hover:border-purple-400">11:00 AM</div>
+                        <div class="bg-white border border-gray-200 text-gray-700 py-3 rounded-xl text-center text-[11px] font-semibold shadow-sm cursor-pointer hover:border-purple-400">11:30 AM</div>
+                    </div>
+
+                    <!-- Fees information -->
+                    <h3 class="text-sm font-extrabold text-gray-900 mb-3">Fees information</h3>
+                    <div class="space-y-3 mb-20">
+                        <!-- Voice call -->
+                        <div class="bg-white border border-gray-200 p-4 rounded-2xl flex items-center justify-between shadow-sm cursor-pointer hover:border-purple-300">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-9 h-9 rounded-xl bg-gray-100 text-gray-700 flex items-center justify-center">
+                                    <i class="fa-solid fa-phone text-xs"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-xs font-bold text-gray-900">Voice call</h4>
+                                    <p class="text-[10px] text-gray-400">Can make a voice call with doctor.</p>
+                                </div>
+                            </div>
+                            <span class="text-xs font-extrabold text-gray-900">$10</span>
+                        </div>
+
+                        <!-- Messaging -->
+                        <div class="bg-purple-600 text-white p-4 rounded-2xl flex items-center justify-between shadow-md cursor-pointer">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-9 h-9 rounded-xl bg-white/20 text-white flex items-center justify-center">
+                                    <i class="fa-solid fa-comment-dots text-xs"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-xs font-bold">Messaging</h4>
+                                    <p class="text-[10px] text-purple-200">Can messaging with doctor.</p>
+                                </div>
+                            </div>
+                            <span class="text-xs font-extrabold">$5</span>
+                        </div>
+
+                        <!-- Video call -->
+                        <div class="bg-white border border-gray-200 p-4 rounded-2xl flex items-center justify-between shadow-sm cursor-pointer hover:border-purple-300">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-9 h-9 rounded-xl bg-gray-100 text-gray-700 flex items-center justify-center">
+                                    <i class="fa-solid fa-video text-xs"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-xs font-bold text-gray-900">Video call</h4>
+                                    <p class="text-[10px] text-gray-400">Can make a video call with doctor.</p>
+                                </div>
+                            </div>
+                            <span class="text-xs font-extrabold text-gray-900">$20</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Botão Fixo Continuar -->
+                <div class="absolute bottom-16 left-0 right-0 px-6 bg-gradient-to-t from-white via-white/90 to-transparent pt-4 pb-2 z-40">
+                    <button onclick="confirmBooking()" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs py-4 rounded-2xl shadow-lg transition transform active:scale-95 cursor-pointer">
+                        Continue
+                    </button>
+                </div>
+            `;
+        }
+
+        function confirmBooking() {
+            // Adiciona na lista de consultas da Cibele
+            myAppointments.unshift({
+                id: Date.now(),
+                doctor: selectedDoctor.name,
+                specialty: selectedDoctor.specialty,
+                date: "17 de Maio, 2023",
+                time: selectedTime,
+                type: "Messaging",
+                image: selectedDoctor.image,
+                status: "Confirmado"
+            });
+            navigateTo('appointments');
         }
 
         function renderAppointmentsScreen(container) {
