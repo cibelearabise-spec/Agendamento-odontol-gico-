@@ -9,12 +9,19 @@
     <!-- FontAwesome para ícones -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Efeito Glow Personalizado */
         .glow-purple {
             box-shadow: 0 10px 25px -5px rgba(147, 51, 234, 0.35), 0 8px 10px -6px rgba(147, 51, 234, 0.35);
         }
         .glow-sm {
             box-shadow: 0 4px 15px -3px rgba(147, 51, 234, 0.2);
+        }
+        /* Esconde a barra de rolagem mas mantém a funcionalidade */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
         }
     </style>
 </head>
@@ -24,12 +31,12 @@
     <div class="w-full max-w-md h-[850px] bg-white shadow-2xl rounded-3xl flex flex-col relative overflow-hidden border-4 border-purple-500/30 glow-purple">
         
         <!-- Área Dinâmica das Telas -->
-        <div id="app-container" class="flex-1 overflow-y-auto pb-20">
+        <div id="app-container" class="flex-1 overflow-y-auto pb-20 no-scrollbar">
             <!-- As telas serão injetadas aqui via JavaScript -->
         </div>
 
-        <!-- Barra de Navegação Inferior (Footer Nav) -->
-        <nav class="absolute bottom-0 left-0 right-0 bg-white/90 backdrop-blur-md border-t border-purple-100 flex justify-around items-center py-3 px-2 shadow-lg z-50">
+        <!-- Barra de Navegação Inferior (Footer Nav) - Oculta na tela splash/welcome -->
+        <nav id="bottom-nav" class="absolute bottom-0 left-0 right-0 bg-white/90 backdrop-blur-md border-t border-purple-100 flex justify-around items-center py-3 px-2 shadow-lg z-50">
             <button onclick="navigateTo('home')" class="nav-btn text-purple-600 flex flex-col items-center cursor-pointer transition transform hover:scale-110" data-target="home">
                 <i class="fa-solid fa-house text-lg"></i>
                 <span class="text-[10px] font-medium mt-1">Início</span>
@@ -65,15 +72,28 @@
         let selectedServicePrice = 50;
 
         window.onload = () => {
-            navigateTo('home');
+            navigateTo('welcome');
         };
 
         function navigateTo(screen, param = null) {
             const container = document.getElementById('app-container');
+            const bottomNav = document.getElementById('bottom-nav');
             container.scrollTop = 0;
-            updateNavActiveState(screen);
+
+            // Controla visibilidade da barra inferior (some na tela welcome)
+            if (screen === 'welcome') {
+                bottomNav.classList.add('hidden');
+                container.classList.remove('pb-20');
+                container.classList.add('pb-4');
+            } else {
+                bottomNav.classList.remove('hidden');
+                container.classList.add('pb-20');
+                container.classList.remove('pb-4');
+                updateNavActiveState(screen);
+            }
 
             switch(screen) {
+                case 'welcome': renderWelcomeScreen(container); break;
                 case 'home': renderHomeScreen(container); break;
                 case 'doctors': renderDoctorsScreen(container); break;
                 case 'profile':
@@ -84,7 +104,7 @@
                 case 'appointments': renderAppointmentsScreen(container); break;
                 case 'chat': renderChatScreen(container); break;
                 case 'settings': renderSettingsScreen(container); break;
-                default: renderHomeScreen(container);
+                default: renderWelcomeScreen(container);
             }
         }
 
@@ -101,6 +121,47 @@
             });
         }
 
+        // --- TELA 0: PRIMEIRA PÁGINA (WELCOME / SPLASH COM GRADIENTE NA FOTO) ---
+        function renderWelcomeScreen(container) {
+            container.innerHTML = `
+                <div class="relative w-full h-full flex flex-col justify-between bg-gradient-to-b from-purple-900 via-purple-950 to-indigo-950 text-white overflow-hidden">
+                    <!-- Botão de Voltar / Topo -->
+                    <div class="absolute top-6 left-6 z-20">
+                        <button onclick="navigateTo('home')" class="w-9 h-9 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white cursor-pointer hover:bg-white/30 transition">
+                            <i class="fa-solid fa-arrow-left text-sm"></i>
+                        </button>
+                    </div>
+
+                    <!-- Área da Foto com Gradiente Suave de Transição para o Fundo Roxo -->
+                    <div class="relative w-full flex-1 flex items-end justify-center overflow-hidden">
+                        <!-- Imagem do Dentista/Profissional -->
+                        <img src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&q=80&w=600" alt="Profissional Destaque" class="w-full h-full object-cover object-top opacity-90">
+                        
+                        <!-- Gradiente sobre a foto para fundir perfeitamente com o fundo roxo da tela (igual ao modelo) -->
+                        <div class="absolute inset-0 bg-gradient-to-t from-[#2e1065] via-[#2e1065]/40 to-transparent"></div>
+                        
+                        <!-- Indicadores de Carrossel (pontinhos) -->
+                        <div class="absolute bottom-4 left-0 right-0 flex justify-center items-center space-x-1.5 z-10">
+                            <span class="w-6 h-1.5 bg-white rounded-full"></span>
+                            <span class="w-1.5 h-1.5 bg-white/50 rounded-full"></span>
+                            <span class="w-1.5 h-1.5 bg-white/50 rounded-full"></span>
+                        </div>
+                    </div>
+
+                    <!-- Conteúdo Inferior (Título, Descrição e Botão) -->
+                    <div class="px-8 pb-10 pt-4 text-center z-10 bg-[#2e1065]">
+                        <h1 class="text-2xl font-extrabold tracking-tight mb-2 text-white">Healthcare point</h1>
+                        <p class="text-xs text-purple-200 leading-relaxed mb-6 max-w-xs mx-auto">
+                            Early protection for you and your family members to grow up healthily
+                        </p>
+                        <button onclick="navigateTo('home')" class="w-full bg-white text-purple-900 font-bold text-xs py-4 rounded-2xl shadow-xl hover:bg-purple-50 transition transform active:scale-95 cursor-pointer">
+                            Get Started
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
         // --- TELA 1: HOME ---
         function renderHomeScreen(container) {
             container.innerHTML = `
@@ -108,10 +169,10 @@
                     <div class="flex justify-between items-center mb-6">
                         <div>
                             <p class="text-xs text-gray-400">Bem-vindo(a) de volta,</p>
-                            <h2 class="text-lg font-extrabold text-gray-800">Paciente</h2>
+                            <h2 class="text-lg font-extrabold text-gray-800">Cibele Arabise</h2>
                         </div>
-                        <div class="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center text-purple-600 font-bold border border-purple-200 glow-sm">
-                            P
+                        <div onclick="navigateTo('welcome')" title="Ver tela inicial" class="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center text-purple-600 font-bold border border-purple-200 glow-sm cursor-pointer hover:bg-purple-200 transition">
+                            C
                         </div>
                     </div>
 
@@ -421,6 +482,10 @@
                 <div class="p-6">
                     <h3 class="font-bold text-gray-800 mb-4 text-sm">Configurações</h3>
                     <div class="space-y-2.5">
+                        <div onclick="navigateTo('welcome')" class="bg-white p-3.5 rounded-2xl border border-gray-100 flex justify-between items-center cursor-pointer hover:glow-sm transition">
+                            <span class="text-xs font-medium text-gray-700"><i class="fa-solid fa-mobile-screen mr-2 text-purple-600"></i> Ver Tela Inicial (Welcome)</span>
+                            <i class="fa-solid fa-chevron-right text-xs text-gray-400"></i>
+                        </div>
                         <div class="bg-white p-3.5 rounded-2xl border border-gray-100 flex justify-between items-center cursor-pointer hover:glow-sm transition">
                             <span class="text-xs font-medium text-gray-700"><i class="fa-regular fa-user mr-2 text-purple-600"></i> Meu Perfil</span>
                             <i class="fa-solid fa-chevron-right text-xs text-gray-400"></i>
