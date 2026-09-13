@@ -53,10 +53,19 @@
     </div>
 
     <script>
+        const specialties = [
+            { name: "Ortodontia", count: "05 dentistas", icon: "fa-teeth", bg: "bg-purple-100", text: "text-purple-600" },
+            { name: "Estética Dental", count: "03 dentistas", icon: "fa-face-smile", bg: "bg-indigo-100", text: "text-indigo-600" },
+            { name: "Limpeza", count: "08 dentistas", icon: "fa-wand-magic-sparkles", bg: "bg-blue-100", text: "text-blue-600" },
+            { name: "Implante", count: "04 dentistas", icon: "fa-tooth", bg: "bg-pink-100", text: "text-pink-600" },
+            { name: "Endodontia", count: "02 dentistas", icon: "fa-stethoscope", bg: "bg-violet-100", text: "text-violet-600" }
+        ];
+
         const dentists = [
-            { id: 1, name: "Dra. Mirna Liz", specialty: "Ortodontia", clinic: "Sorriso Perfeito Clinic", rating: 4.9, time: "09:00 AM - 05:00 PM", image: "dentista.jpg" },
-            { id: 2, name: "Dra. Ana Souza", specialty: "Implantes Dentários", clinic: "Dental Health Center", rating: 4.8, time: "10:00 AM - 06:00 PM", image: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=80&w=200" },
-            { id: 3, name: "Dr. Marcos Lima", specialty: "Endodontia (Canal)", clinic: "Odonto Prime", rating: 4.7, time: "08:00 AM - 04:00 PM", image: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&q=80&w=200" }
+            // Corrigido aqui para usar dentista.jpg
+            { id: 1, name: "Dra. Mirna Liz", specialty: "Ortodontia", clinic: "Sorriso Perfeito Clinic", rating: 4.9, time: "09:00 - 17:00", image: "dentista.jpg" },
+            { id: 2, name: "Dra. Ana Souza", specialty: "Implantes Dentários", clinic: "Dental Health Center", rating: 4.8, time: "10:00 - 18:00", image: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=80&w=200" },
+            { id: 3, name: "Dr. Marcos Lima", specialty: "Endodontia (Canal)", clinic: "Odonto Prime", rating: 4.7, time: "08:00 - 16:00", image: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&q=80&w=200" }
         ];
 
         let selectedDentist = null;
@@ -123,6 +132,7 @@
                         </button>
                     </div>
                     <div class="relative w-full flex-1 flex items-end justify-center overflow-hidden">
+                        <!-- Tela inicial usa tela.jpg -->
                         <img src="tela.jpg" alt="Profissional Destaque" class="w-full h-full object-cover object-top opacity-90">
                         <div class="absolute inset-0 bg-gradient-to-t from-[#2e1065] via-[#2e1065]/40 to-transparent"></div>
                     </div>
@@ -142,42 +152,62 @@
         function renderHomeScreen(container) {
             container.innerHTML = `
                 <div class="p-6">
+                    <!-- Cabeçalho com Perfil -->
                     <div class="flex justify-between items-center mb-6">
-                        <div>
-                            <p class="text-xs text-gray-400">Bem-vindo(a) de volta,</p>
-                            <h2 class="text-lg font-extrabold text-gray-800">Cibele Arabise</h2>
-                        </div>
-                        <div onclick="navigateTo('welcome')" title="Ver tela inicial" class="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center text-purple-600 font-bold border border-purple-200 glow-sm cursor-pointer hover:bg-purple-200 transition">
-                            C
-                        </div>
-                    </div>
-                    <div class="bg-gradient-to-r from-purple-600 via-purple-700 to-indigo-600 rounded-2xl p-5 text-white mb-6 glow-purple relative overflow-hidden">
-                        <div class="absolute -right-4 -bottom-4 w-28 h-28 bg-white/10 rounded-full blur-xl"></div>
-                        <div class="flex items-center justify-between relative z-10">
+                        <div class="flex items-center space-x-3">
+                            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=150" alt="Cibele" class="w-12 h-12 rounded-full object-cover border-2 border-purple-500 shadow-md">
                             <div>
-                                <h3 class="text-lg font-bold">Sorriso Saudável</h3>
-                                <p class="text-xs text-purple-100 mt-1">Cuide da sua saúde bucal regularmente com os melhores especialistas.</p>
-                                <button onclick="navigateTo('doctors')" class="mt-4 bg-white text-purple-700 text-xs font-bold px-4 py-2.5 rounded-xl shadow-md cursor-pointer hover:bg-purple-50 transition transform hover:scale-105">
-                                    Agendar Agora
-                                </button>
+                                <p class="text-[11px] text-gray-400">Olá,</p>
+                                <h2 class="text-base font-extrabold text-gray-800">Cibele Arabise</h2>
                             </div>
-                            <i class="fa-solid fa-tooth text-5xl text-purple-200 opacity-90"></i>
+                        </div>
+                        <div class="flex space-x-2">
+                            <div onclick="navigateTo('welcome')" class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 cursor-pointer hover:bg-purple-100 hover:text-purple-600 transition shadow-sm">
+                                <i class="fa-regular fa-bell text-sm"></i>
+                            </div>
                         </div>
                     </div>
+
+                    <!-- Título Principal -->
+                    <div class="mb-5">
+                        <h1 class="text-2xl font-extrabold text-gray-900 leading-tight">Vamos encontrar<br>seu dentista ideal</h1>
+                    </div>
+
+                    <!-- Cards de Especialidades (Com Rolagem Horizontal) -->
+                    <div class="mb-6">
+                        <div class="flex space-x-4 overflow-x-auto no-scrollbar py-2">
+                            ${specialties.map(spec => `
+                                <div onclick="navigateTo('doctors')" class="min-w-[130px] bg-white p-4 rounded-2xl border border-purple-100 shadow-sm flex flex-col justify-between cursor-pointer hover:border-purple-400 hover:shadow-md transition flex-shrink-0">
+                                    <div class="w-10 h-10 rounded-xl ${spec.bg} ${spec.text} flex items-center justify-center mb-3">
+                                        <i class="fa-solid ${spec.icon} text-lg"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold text-gray-800 text-xs">${spec.name}</h4>
+                                        <p class="text-[10px] text-gray-400 mt-0.5">${spec.count}</p>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+
+                    <!-- Dentistas em Destaque -->
                     <div>
                         <div class="flex justify-between items-center mb-3">
                             <h4 class="font-bold text-gray-800 text-sm">Dentistas em Destaque</h4>
-                            <span onclick="navigateTo('doctors')" class="text-xs text-purple-600 font-semibold cursor-pointer hover:underline">Ver mais</span>
+                            <span onclick="navigateTo('doctors')" class="text-xs text-purple-600 font-semibold cursor-pointer hover:underline">Ver tudo</span>
                         </div>
                         <div class="space-y-4">
                             ${dentists.map(d => `
                                 <div onclick="navigateTo('profile', ${d.id})" class="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm flex items-center space-x-4 cursor-pointer hover:border-purple-300 hover:glow-sm transition">
-                                    <!-- Foto bem maior (w-24 h-24) -->
+                                    <!-- Foto Grande puxando dentista.jpg para a Dra. Mirna -->
                                     <img src="${d.image}" alt="${d.name}" class="w-24 h-24 rounded-2xl object-cover shadow-md flex-shrink-0">
                                     <div class="flex-1">
                                         <h5 class="text-sm font-bold text-gray-800">${d.name}</h5>
                                         <p class="text-xs text-purple-600 font-semibold mt-1">${d.specialty}</p>
-                                        <p class="text-[11px] text-gray-400 mt-1">${d.clinic}</p>
+                                        <p class="text-[11px] text-gray-400 mt-0.5">${d.clinic}</p>
+                                        <div class="flex items-center text-[10px] text-purple-700 font-medium mt-2 bg-purple-50 px-2 py-1 rounded-lg w-max">
+                                            <i class="fa-regular fa-clock mr-1.5"></i> ${d.time}
+                                        </div>
                                     </div>
                                 </div>
                             `).join('')}
@@ -192,14 +222,13 @@
         }
 
         function renderProfileScreen(container) {
-            container.innerHTML = `<div class="p-6"><h3 class="font-bold text-gray-800 mb-4">Perfil</h3><button onclick="navigateTo('doctors')" class="text-purple-600 text-xs underline">Voltar</button></div>`;
+            container.innerHTML = `<div class="p-6"><h3 class="font-bold text-gray-800 mb-4">Perfil</h3><button onclick="navigateTo('home')" class="text-purple-600 text-xs underline">Voltar</button></div>`;
         }
 
         function renderBookingScreen(container) {
             container.innerHTML = `<div class="p-6"><h3 class="font-bold text-gray-800 mb-4">Agendamento</h3></div>`;
         }
 
-        let myAppointments = [];
         function renderAppointmentsScreen(container) {
             container.innerHTML = `<div class="p-6"><h3 class="font-bold text-gray-800 mb-4">Meus Agendamentos</h3></div>`;
         }
