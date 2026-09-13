@@ -132,7 +132,7 @@
                             Proteção precoce para você e sua família crescerem com saúde
                         </p>
                         <button onclick="navigateTo('home')" class="w-full bg-white text-purple-900 font-bold text-xs py-4 rounded-2xl shadow-xl hover:bg-purple-50 transition transform active:scale-95 cursor-pointer">
-                            Iniciar
+                            Começar
                         </button>
                     </div>
                 </div>
@@ -171,12 +171,12 @@
                         </div>
                         <div class="space-y-3">
                             ${dentists.map(d => `
-                                <div onclick="navigateTo('profile', ${d.id})" class="bg-white p-3.5 rounded-2xl border border-gray-100 shadow-sm flex items-center space-x-3 cursor-pointer hover:border-purple-300 hover:glow-sm transition">
-                                    <img src="${d.image}" alt="${d.name}" class="w-14 h-14 rounded-xl object-cover shadow">
+                                <div onclick="navigateTo('profile', ${d.id})" class="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm flex items-center space-x-4 cursor-pointer hover:border-purple-300 hover:glow-sm transition">
+                                    <img src="${d.image}" alt="${d.name}" class="w-20 h-20 rounded-2xl object-cover shadow-md">
                                     <div class="flex-1">
-                                        <h5 class="text-xs font-bold text-gray-800">${d.name}</h5>
-                                        <p class="text-[11px] text-purple-600 font-medium">${d.specialty}</p>
-                                        <p class="text-[10px] text-gray-400">${d.clinic}</p>
+                                        <h5 class="text-sm font-bold text-gray-800">${d.name}</h5>
+                                        <p class="text-xs text-purple-600 font-semibold mt-0.5">${d.specialty}</p>
+                                        <p class="text-[11px] text-gray-400 mt-0.5">${d.clinic}</p>
                                     </div>
                                 </div>
                             `).join('')}
