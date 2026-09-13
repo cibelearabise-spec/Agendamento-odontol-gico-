@@ -8,11 +8,20 @@
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <!-- FontAwesome para ícones -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Efeito Glow Personalizado */
+        .glow-purple {
+            box-shadow: 0 10px 25px -5px rgba(147, 51, 234, 0.35), 0 8px 10px -6px rgba(147, 51, 234, 0.35);
+        }
+        .glow-sm {
+            box-shadow: 0 4px 15px -3px rgba(147, 51, 234, 0.2);
+        }
+    </style>
 </head>
-<body class="bg-gray-100 flex justify-center items-center min-h-screen">
+<body class="bg-gradient-to-br from-indigo-950 via-purple-900 to-gray-900 flex justify-center items-center min-h-screen p-2">
 
-    <!-- Container estilo Smartphone -->
-    <div class="w-full max-w-md h-[850px] bg-white shadow-2xl rounded-3xl flex flex-col relative overflow-hidden border-8 border-gray-900">
+    <!-- Container estilo Smartphone com fundo translúcido e efeito glow externo -->
+    <div class="w-full max-w-md h-[850px] bg-white shadow-2xl rounded-3xl flex flex-col relative overflow-hidden border-4 border-purple-500/30 glow-purple">
         
         <!-- Área Dinâmica das Telas -->
         <div id="app-container" class="flex-1 overflow-y-auto pb-20">
@@ -20,20 +29,20 @@
         </div>
 
         <!-- Barra de Navegação Inferior (Footer Nav) -->
-        <nav class="absolute bottom-0 left-0 right-0 bg-white border-t border-gray-200 flex justify-around items-center py-3 px-2 shadow-lg z-50">
-            <button onclick="navigateTo('home')" class="nav-btn text-purple-600 flex flex-col items-center cursor-pointer" data-target="home">
+        <nav class="absolute bottom-0 left-0 right-0 bg-white/90 backdrop-blur-md border-t border-purple-100 flex justify-around items-center py-3 px-2 shadow-lg z-50">
+            <button onclick="navigateTo('home')" class="nav-btn text-purple-600 flex flex-col items-center cursor-pointer transition transform hover:scale-110" data-target="home">
                 <i class="fa-solid fa-house text-lg"></i>
                 <span class="text-[10px] font-medium mt-1">Início</span>
             </button>
-            <button onclick="navigateTo('appointments')" class="nav-btn text-gray-400 flex flex-col items-center cursor-pointer" data-target="appointments">
+            <button onclick="navigateTo('appointments')" class="nav-btn text-gray-400 flex flex-col items-center cursor-pointer transition transform hover:scale-110" data-target="appointments">
                 <i class="fa-solid fa-calendar-days text-lg"></i>
                 <span class="text-[10px] font-medium mt-1">Consultas</span>
             </button>
-            <button onclick="navigateTo('chat')" class="nav-btn text-gray-400 flex flex-col items-center cursor-pointer" data-target="chat">
+            <button onclick="navigateTo('chat')" class="nav-btn text-gray-400 flex flex-col items-center cursor-pointer transition transform hover:scale-110" data-target="chat">
                 <i class="fa-solid fa-comments text-lg"></i>
                 <span class="text-[10px] font-medium mt-1">Chat</span>
             </button>
-            <button onclick="navigateTo('settings')" class="nav-btn text-gray-400 flex flex-col items-center cursor-pointer" data-target="settings">
+            <button onclick="navigateTo('settings')" class="nav-btn text-gray-400 flex flex-col items-center cursor-pointer transition transform hover:scale-110" data-target="settings">
                 <i class="fa-solid fa-gear text-lg"></i>
                 <span class="text-[10px] font-medium mt-1">Ajustes</span>
             </button>
@@ -42,7 +51,7 @@
 
     <!-- Scripts JavaScript para Lógica de SPA -->
     <script>
-        // Dados Mockados dos Dentistas
+        // Dados Mockados dos Dentistas com fotos reais
         const dentists = [
             { id: 1, name: "Dr. Carlos Silva", specialty: "Ortodontia", clinic: "Sorriso Perfeito Clinic", rating: 4.9, time: "09:00 AM - 05:00 PM", image: "https://images.unsplash.com/photo-1537368910025-700350fe46c7?auto=format&fit=crop&q=80&w=200" },
             { id: 2, name: "Dra. Ana Souza", specialty: "Implantes Dentários", clinic: "Dental Health Center", rating: 4.8, time: "10:00 AM - 06:00 PM", image: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=80&w=200" },
@@ -55,42 +64,27 @@
         let selectedServiceType = 'Consulta presencial';
         let selectedServicePrice = 50;
 
-        // Estado inicial da aplicação
         window.onload = () => {
             navigateTo('home');
         };
 
-        // Função principal de Roteamento/Navegação SPA
         function navigateTo(screen, param = null) {
             const container = document.getElementById('app-container');
-            container.scrollTop = 0; // Reset scroll
+            container.scrollTop = 0;
             updateNavActiveState(screen);
 
             switch(screen) {
-                case 'home':
-                    renderHomeScreen(container);
-                    break;
-                case 'doctors':
-                    renderDoctorsScreen(container);
-                    break;
+                case 'home': renderHomeScreen(container); break;
+                case 'doctors': renderDoctorsScreen(container); break;
                 case 'profile':
                     selectedDentist = dentists.find(d => d.id === param) || dentists[0];
                     renderProfileScreen(container);
                     break;
-                case 'booking':
-                    renderBookingScreen(container);
-                    break;
-                case 'appointments':
-                    renderAppointmentsScreen(container);
-                    break;
-                case 'chat':
-                    renderChatScreen(container);
-                    break;
-                case 'settings':
-                    renderSettingsScreen(container);
-                    break;
-                default:
-                    renderHomeScreen(container);
+                case 'booking': renderBookingScreen(container); break;
+                case 'appointments': renderAppointmentsScreen(container); break;
+                case 'chat': renderChatScreen(container); break;
+                case 'settings': renderSettingsScreen(container); break;
+                default: renderHomeScreen(container);
             }
         }
 
@@ -99,9 +93,9 @@
                 const target = btn.getAttribute('data-target');
                 if (target === screen) {
                     btn.classList.remove('text-gray-400');
-                    btn.classList.add('text-purple-600');
+                    btn.classList.add('text-purple-600', 'font-bold');
                 } else {
-                    btn.classList.remove('text-purple-600');
+                    btn.classList.remove('text-purple-600', 'font-bold');
                     btn.classList.add('text-gray-400');
                 }
             });
@@ -111,28 +105,28 @@
         function renderHomeScreen(container) {
             container.innerHTML = `
                 <div class="p-6">
-                    <!-- Header -->
                     <div class="flex justify-between items-center mb-6">
                         <div>
-                            <p class="text-xs text-gray-500">Bem-vindo(a) de volta,</p>
-                            <h2 class="text-lg font-bold text-gray-800">Paciente</h2>
+                            <p class="text-xs text-gray-400">Bem-vindo(a) de volta,</p>
+                            <h2 class="text-lg font-extrabold text-gray-800">Paciente</h2>
                         </div>
-                        <div class="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center text-purple-600 font-bold">
+                        <div class="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center text-purple-600 font-bold border border-purple-200 glow-sm">
                             P
                         </div>
                     </div>
 
-                    <!-- Banner Destaque -->
-                    <div class="bg-gradient-to-r from-purple-600 to-indigo-600 rounded-2xl p-5 text-white mb-6 shadow-lg">
-                        <div class="flex items-center justify-between">
+                    <!-- Banner Destaque com Gradiente e Glow -->
+                    <div class="bg-gradient-to-r from-purple-600 via-purple-700 to-indigo-600 rounded-2xl p-5 text-white mb-6 glow-purple relative overflow-hidden">
+                        <div class="absolute -right-4 -bottom-4 w-28 h-28 bg-white/10 rounded-full blur-xl"></div>
+                        <div class="flex items-center justify-between relative z-10">
                             <div>
                                 <h3 class="text-lg font-bold">Sorriso Saudável</h3>
                                 <p class="text-xs text-purple-100 mt-1">Cuide da sua saúde bucal regularmente com os melhores especialistas.</p>
-                                <button onclick="navigateTo('doctors')" class="mt-4 bg-white text-purple-600 text-xs font-bold px-4 py-2 rounded-xl shadow cursor-pointer hover:bg-purple-50">
+                                <button onclick="navigateTo('doctors')" class="mt-4 bg-white text-purple-700 text-xs font-bold px-4 py-2.5 rounded-xl shadow-md cursor-pointer hover:bg-purple-50 transition transform hover:scale-105">
                                     Agendar Agora
                                 </button>
                             </div>
-                            <i class="fa-solid fa-tooth text-5xl text-purple-200 opacity-80"></i>
+                            <i class="fa-solid fa-tooth text-5xl text-purple-200 opacity-90"></i>
                         </div>
                     </div>
 
@@ -140,11 +134,11 @@
                     <div class="mb-6">
                         <div class="flex justify-between items-center mb-3">
                             <h4 class="font-bold text-gray-800 text-sm">Especialidades</h4>
-                            <span onclick="navigateTo('doctors')" class="text-xs text-purple-600 font-semibold cursor-pointer">Ver todas</span>
+                            <span onclick="navigateTo('doctors')" class="text-xs text-purple-600 font-semibold cursor-pointer hover:underline">Ver todas</span>
                         </div>
                         <div class="grid grid-cols-2 gap-3">
-                            <div onclick="navigateTo('doctors')" class="bg-purple-50 p-3 rounded-xl border border-purple-100 flex items-center space-x-3 cursor-pointer hover:bg-purple-100 transition">
-                                <div class="w-10 h-10 rounded-lg bg-purple-600 text-white flex items-center justify-center">
+                            <div onclick="navigateTo('doctors')" class="bg-gradient-to-br from-purple-50 to-white p-3 rounded-2xl border border-purple-100 flex items-center space-x-3 cursor-pointer glow-sm hover:border-purple-300 transition">
+                                <div class="w-10 h-10 rounded-xl bg-purple-600 text-white flex items-center justify-center shadow-md">
                                     <i class="fa-solid fa-teeth"></i>
                                 </div>
                                 <div>
@@ -152,8 +146,8 @@
                                     <p class="text-[10px] text-gray-500">8 dentistas</p>
                                 </div>
                             </div>
-                            <div onclick="navigateTo('doctors')" class="bg-blue-50 p-3 rounded-xl border border-blue-100 flex items-center space-x-3 cursor-pointer hover:bg-blue-100 transition">
-                                <div class="w-10 h-10 rounded-lg bg-blue-600 text-white flex items-center justify-center">
+                            <div onclick="navigateTo('doctors')" class="bg-gradient-to-br from-blue-50 to-white p-3 rounded-2xl border border-blue-100 flex items-center space-x-3 cursor-pointer shadow-sm hover:border-blue-300 transition">
+                                <div class="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center shadow-md">
                                     <i class="fa-solid fa-tooth"></i>
                                 </div>
                                 <div>
@@ -168,15 +162,15 @@
                     <div>
                         <div class="flex justify-between items-center mb-3">
                             <h4 class="font-bold text-gray-800 text-sm">Dentistas em Destaque</h4>
-                            <span onclick="navigateTo('doctors')" class="text-xs text-purple-600 font-semibold cursor-pointer">Ver mais</span>
+                            <span onclick="navigateTo('doctors')" class="text-xs text-purple-600 font-semibold cursor-pointer hover:underline">Ver mais</span>
                         </div>
                         <div class="space-y-3">
                             ${dentists.map(d => `
-                                <div onclick="navigateTo('profile', ${d.id})" class="bg-white p-3 rounded-xl border border-gray-100 shadow-sm flex items-center space-x-3 cursor-pointer hover:border-purple-300 transition">
-                                    <img src="${d.image}" alt="${d.name}" class="w-14 h-14 rounded-xl object-cover">
+                                <div onclick="navigateTo('profile', ${d.id})" class="bg-white p-3.5 rounded-2xl border border-gray-100 shadow-sm flex items-center space-x-3 cursor-pointer hover:border-purple-300 hover:glow-sm transition">
+                                    <img src="${d.image}" alt="${d.name}" class="w-14 h-14 rounded-xl object-cover shadow">
                                     <div class="flex-1">
                                         <h5 class="text-xs font-bold text-gray-800">${d.name}</h5>
-                                        <p class="text-[11px] text-purple-600">${d.specialty}</p>
+                                        <p class="text-[11px] text-purple-600 font-medium">${d.specialty}</p>
                                         <p class="text-[10px] text-gray-400">${d.clinic}</p>
                                         <div class="flex items-center mt-1 text-[10px] text-amber-500">
                                             <i class="fa-solid fa-star mr-1"></i> <span class="font-bold">${d.rating}</span>
@@ -195,21 +189,20 @@
             container.innerHTML = `
                 <div class="p-6">
                     <div class="flex items-center mb-4">
-                        <button onclick="navigateTo('home')" class="mr-3 text-gray-600 cursor-pointer"><i class="fa-solid fa-arrow-left"></i></button>
+                        <button onclick="navigateTo('home')" class="mr-3 text-gray-600 cursor-pointer w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center hover:bg-purple-100 hover:text-purple-600"><i class="fa-solid fa-arrow-left"></i></button>
                         <h3 class="font-bold text-gray-800">Dentistas Disponíveis</h3>
                     </div>
-                    <!-- Barra de Pesquisa -->
                     <div class="relative mb-4">
-                        <i class="fa-solid fa-magnifying-glass absolute left-3 top-3 text-gray-400 text-sm"></i>
-                        <input type="text" placeholder="Buscar dentista ou especialidade..." class="w-full bg-gray-50 border border-gray-200 rounded-xl py-2.5 pl-10 pr-4 text-xs focus:outline-none focus:border-purple-500">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3.5 text-gray-400 text-sm"></i>
+                        <input type="text" placeholder="Buscar dentista ou especialidade..." class="w-full bg-gray-50 border border-gray-200 rounded-2xl py-3 pl-10 pr-4 text-xs focus:outline-none focus:border-purple-500 focus:glow-sm">
                     </div>
                     <div class="space-y-3">
                         ${dentists.map(d => `
-                            <div onclick="navigateTo('profile', ${d.id})" class="bg-white p-3 rounded-xl border border-gray-100 shadow-sm flex items-center space-x-3 cursor-pointer hover:border-purple-300 transition">
-                                <img src="${d.image}" alt="${d.name}" class="w-14 h-14 rounded-xl object-cover">
+                            <div onclick="navigateTo('profile', ${d.id})" class="bg-white p-3.5 rounded-2xl border border-gray-100 shadow-sm flex items-center space-x-3 cursor-pointer hover:border-purple-300 hover:glow-sm transition">
+                                <img src="${d.image}" alt="${d.name}" class="w-14 h-14 rounded-xl object-cover shadow">
                                 <div class="flex-1">
                                     <h5 class="text-xs font-bold text-gray-800">${d.name}</h5>
-                                    <p class="text-[11px] text-purple-600">${d.specialty}</p>
+                                    <p class="text-[11px] text-purple-600 font-medium">${d.specialty}</p>
                                     <p class="text-[10px] text-gray-400">${d.clinic}</p>
                                     <div class="flex items-center mt-1 text-[10px] text-amber-500">
                                         <i class="fa-solid fa-star mr-1"></i> <span class="font-bold">${d.rating}</span>
@@ -228,16 +221,15 @@
             container.innerHTML = `
                 <div class="p-6">
                     <div class="flex items-center mb-4">
-                        <button onclick="navigateTo('doctors')" class="mr-3 text-gray-600 cursor-pointer"><i class="fa-solid fa-arrow-left"></i></button>
+                        <button onclick="navigateTo('doctors')" class="mr-3 text-gray-600 cursor-pointer w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center hover:bg-purple-100 hover:text-purple-600"><i class="fa-solid fa-arrow-left"></i></button>
                         <h3 class="font-bold text-gray-800">Detalhes do Profissional</h3>
                     </div>
 
-                    <!-- Cartão do Perfil -->
-                    <div class="bg-purple-50 p-4 rounded-2xl flex items-center space-x-4 mb-4 border border-purple-100">
-                        <img src="${d.image}" class="w-16 h-16 rounded-2xl object-cover shadow">
+                    <div class="bg-gradient-to-r from-purple-50 to-indigo-50 p-4 rounded-2xl flex items-center space-x-4 mb-4 border border-purple-100 glow-sm">
+                        <img src="${d.image}" class="w-16 h-16 rounded-2xl object-cover shadow-md">
                         <div>
                             <h4 class="font-bold text-gray-800 text-sm">${d.name}</h4>
-                            <p class="text-xs text-purple-600 font-medium">${d.specialty}</p>
+                            <p class="text-xs text-purple-600 font-semibold">${d.specialty}</p>
                             <p class="text-[11px] text-gray-500">${d.clinic}</p>
                             <div class="flex items-center mt-1 text-[11px] text-amber-500 font-bold">
                                 <i class="fa-solid fa-star mr-1"></i> ${d.rating}
@@ -245,7 +237,6 @@
                         </div>
                     </div>
 
-                    <!-- Sobre -->
                     <div class="mb-4">
                         <h5 class="font-bold text-gray-800 text-xs mb-1">Sobre o Profissional</h5>
                         <p class="text-[11px] text-gray-500 leading-relaxed">
@@ -253,79 +244,74 @@
                         </p>
                     </div>
 
-                    <!-- Horário de Atendimento -->
-                    <div class="mb-6 bg-gray-50 p-3 rounded-xl border border-gray-200">
+                    <div class="mb-6 bg-gray-50 p-3.5 rounded-2xl border border-gray-200">
                         <h5 class="font-bold text-gray-800 text-xs mb-1">Horário de Funcionamento</h5>
                         <p class="text-[11px] text-gray-600"><i class="fa-regular fa-clock mr-1 text-purple-600"></i> ${d.time}</p>
                     </div>
 
-                    <!-- Botão Agendar -->
-                    <button onclick="navigateTo('booking')" class="w-full bg-purple-600 text-white font-bold text-xs py-3 rounded-xl shadow-md hover:bg-purple-700 cursor-pointer transition">
+                    <button onclick="navigateTo('booking')" class="w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-bold text-xs py-3.5 rounded-2xl shadow-lg glow-purple hover:opacity-95 cursor-pointer transition">
                         Agendar Consulta
                     </button>
                 </div>
             `;
         }
 
-        // --- TELA 4: FLUXO DE AGENDAMENTO (CALENDÁRIO E TAXAS) ---
+        // --- TELA 4: FLUXO DE AGENDAMENTO ---
         function renderBookingScreen(container) {
             container.innerHTML = `
                 <div class="p-6">
                     <div class="flex items-center mb-4">
-                        <button onclick="navigateTo('profile', ${selectedDentist.id})" class="mr-3 text-gray-600 cursor-pointer"><i class="fa-solid fa-arrow-left"></i></button>
+                        <button onclick="navigateTo('profile', ${selectedDentist.id})" class="mr-3 text-gray-600 cursor-pointer w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center hover:bg-purple-100 hover:text-purple-600"><i class="fa-solid fa-arrow-left"></i></button>
                         <h3 class="font-bold text-gray-800">Agendamento de Horário</h3>
                     </div>
 
-                    <!-- Seletor de Data Simples -->
                     <div class="mb-4">
                         <h5 class="font-bold text-gray-800 text-xs mb-2">Maio de 2023</h5>
                         <div class="flex space-x-2 overflow-x-auto pb-2">
-                            <div class="bg-gray-50 px-3 py-2 rounded-xl text-center border border-gray-200">
+                            <div class="bg-gray-50 px-3 py-2.5 rounded-xl text-center border border-gray-200">
                                 <span class="block text-[9px] text-gray-400">SEG</span>
                                 <span class="block text-xs font-bold text-gray-700">15</span>
                             </div>
-                            <div class="bg-gray-50 px-3 py-2 rounded-xl text-center border border-gray-200">
+                            <div class="bg-gray-50 px-3 py-2.5 rounded-xl text-center border border-gray-200">
                                 <span class="block text-[9px] text-gray-400">TER</span>
                                 <span class="block text-xs font-bold text-gray-700">16</span>
                             </div>
-                            <div class="bg-purple-600 text-white px-3 py-2 rounded-xl text-center shadow">
+                            <div class="bg-purple-600 text-white px-3 py-2.5 rounded-xl text-center shadow glow-purple">
                                 <span class="block text-[9px] text-purple-200">QUA</span>
                                 <span class="block text-xs font-bold">17</span>
                             </div>
-                            <div class="bg-gray-50 px-3 py-2 rounded-xl text-center border border-gray-200">
+                            <div class="bg-gray-50 px-3 py-2.5 rounded-xl text-center border border-gray-200">
                                 <span class="block text-[9px] text-gray-400">QUI</span>
                                 <span class="block text-xs font-bold text-gray-700">18</span>
                             </div>
-                            <div class="bg-gray-50 px-3 py-2 rounded-xl text-center border border-gray-200">
+                            <div class="bg-gray-50 px-3 py-2.5 rounded-xl text-center border border-gray-200">
                                 <span class="block text-[9px] text-gray-400">SEX</span>
                                 <span class="block text-xs font-bold text-gray-700">19</span>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Horários Disponíveis -->
                     <div class="mb-4">
                         <h5 class="font-bold text-gray-800 text-xs mb-2">Horários (Manhã)</h5>
                         <div class="grid grid-cols-3 gap-2">
-                            <button onclick="selectTime('09:00 AM', this)" class="time-slot border border-gray-200 py-1.5 rounded-lg text-[11px] text-gray-600 hover:border-purple-600">09:00 AM</button>
-                            <button onclick="selectTime('09:30 AM', this)" class="time-slot border border-gray-200 py-1.5 rounded-lg text-[11px] text-gray-600 hover:border-purple-600">09:30 AM</button>
-                            <button onclick="selectTime('10:30 AM', this)" class="time-slot bg-purple-600 text-white font-bold py-1.5 rounded-lg text-[11px] shadow">10:30 AM</button>
+                            <button onclick="selectTime('09:00 AM', this)" class="time-slot border border-gray-200 py-2 rounded-xl text-[11px] text-gray-600 hover:border-purple-600">09:00 AM</button>
+                            <button onclick="selectTime('09:30 AM', this)" class="time-slot border border-gray-200 py-2 rounded-xl text-[11px] text-gray-600 hover:border-purple-600">09:30 AM</button>
+                            <button onclick="selectTime('10:30 AM', this)" class="time-slot bg-purple-600 text-white font-bold py-2 rounded-xl text-[11px] shadow glow-sm">10:30 AM</button>
                         </div>
                     </div>
 
-                    <!-- Tipos de Atendimento e Taxas -->
                     <div class="mb-6">
                         <h5 class="font-bold text-gray-800 text-xs mb-2">Tipo de Atendimento</h5>
                         <div class="space-y-2">
-                            <div onclick="selectService('Consulta presencial', 50, this)" class="service-option border border-purple-500 bg-purple-50 p-2.5 rounded-xl flex justify-between items-center cursor-pointer">
-                                <div class="flex items-center space-x-2">
+                            <div onclick="selectService('Consulta presencial', 50, this)" class="service-option border-2 border-purple-500 bg-purple-50/50 p-3 rounded-2xl flex justify-between items-center cursor-pointer glow-sm">
+                                <div class="flex items-center space-x-2.5">
                                     <i class="fa-solid fa-tooth text-purple-600 text-xs"></i>
                                     <span class="text-xs font-medium text-gray-800">Consulta Odontológica Presencial</span>
                                 </div>
                                 <span class="text-xs font-bold text-purple-600">R$ 50</span>
                             </div>
-                            <div onclick="selectService('Orientações online', 30, this)" class="service-option border border-gray-200 p-2.5 rounded-xl flex justify-between items-center cursor-pointer">
-                                <div class="flex items-center space-x-2">
+                            <div onclick="selectService('Orientações online', 30, this)" class="service-option border border-gray-200 p-3 rounded-2xl flex justify-between items-center cursor-pointer">
+                                <div class="flex items-center space-x-2.5">
                                     <i class="fa-solid fa-video text-gray-400 text-xs"></i>
                                     <span class="text-xs font-medium text-gray-600">Tele-orientação</span>
                                 </div>
@@ -334,8 +320,7 @@
                         </div>
                     </div>
 
-                    <!-- Botão Continuar/Confirmar -->
-                    <button onclick="confirmAppointment()" class="w-full bg-purple-600 text-white font-bold text-xs py-3 rounded-xl shadow-md hover:bg-purple-700 cursor-pointer transition">
+                    <button onclick="confirmAppointment()" class="w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-bold text-xs py-3.5 rounded-2xl shadow-lg glow-purple hover:opacity-95 cursor-pointer transition">
                         Confirmar Agendamento
                     </button>
                 </div>
@@ -344,19 +329,19 @@
 
         function selectTime(time, el) {
             document.querySelectorAll('.time-slot').forEach(b => {
-                b.className = "time-slot border border-gray-200 py-1.5 rounded-lg text-[11px] text-gray-600 hover:border-purple-600";
+                b.className = "time-slot border border-gray-200 py-2 rounded-xl text-[11px] text-gray-600 hover:border-purple-600";
             });
-            el.className = "time-slot bg-purple-600 text-white font-bold py-1.5 rounded-lg text-[11px] shadow";
+            el.className = "time-slot bg-purple-600 text-white font-bold py-2 rounded-xl text-[11px] shadow glow-sm";
             selectedTimeSlot = time;
         }
 
         function selectService(name, price, el) {
             document.querySelectorAll('.service-option').forEach(s => {
-                s.className = "service-option border border-gray-200 p-2.5 rounded-xl flex justify-between items-center cursor-pointer";
+                s.className = "service-option border border-gray-200 p-3 rounded-2xl flex justify-between items-center cursor-pointer";
                 s.querySelector('i').className = "fa-solid fa-tooth text-gray-400 text-xs";
                 s.querySelector('span:last-child').className = "text-xs font-bold text-gray-600";
             });
-            el.className = "service-option border border-purple-500 bg-purple-50 p-2.5 rounded-xl flex justify-between items-center cursor-pointer";
+            el.className = "service-option border-2 border-purple-500 bg-purple-50/50 p-3 rounded-2xl flex justify-between items-center cursor-pointer glow-sm";
             el.querySelector('i').className = "fa-solid fa-tooth text-purple-600 text-xs";
             el.querySelector('span:last-child').className = "text-xs font-bold text-purple-600";
             selectedServiceType = name;
@@ -385,21 +370,21 @@
         function renderAppointmentsScreen(container) {
             container.innerHTML = `
                 <div class="p-6">
-                    <h3 class="font-bold text-gray-800 mb-4">Meus Agendamentos</h3>
+                    <h3 class="font-bold text-gray-800 mb-4 text-sm">Meus Agendamentos</h3>
                     <div class="space-y-3">
                         ${myAppointments.length === 0 ? '<p class="text-xs text-gray-400 text-center py-10">Nenhum agendamento encontrado.</p>' : ''}
                         ${myAppointments.map(app => `
-                            <div class="bg-white p-3.5 rounded-xl border border-gray-100 shadow-sm">
-                                <div class="flex items-center space-x-3 mb-2">
-                                    <img src="${app.image}" class="w-12 h-12 rounded-xl object-cover">
+                            <div class="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm glow-sm">
+                                <div class="flex items-center space-x-3 mb-3">
+                                    <img src="${app.image}" class="w-12 h-12 rounded-xl object-cover shadow">
                                     <div>
                                         <h5 class="text-xs font-bold text-gray-800">${app.doctor}</h5>
-                                        <p class="text-[10px] text-purple-600">${app.specialty}</p>
+                                        <p class="text-[10px] text-purple-600 font-medium">${app.specialty}</p>
                                     </div>
                                 </div>
-                                <div class="bg-gray-50 p-2 rounded-lg text-[11px] text-gray-600 flex justify-between items-center mb-2">
+                                <div class="bg-purple-50/50 p-2.5 rounded-xl text-[11px] text-gray-600 flex justify-between items-center border border-purple-100">
                                     <span><i class="fa-regular fa-clock mr-1 text-purple-600"></i> ${app.date}, ${app.time}</span>
-                                    <span class="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded">${app.status}</span>
+                                    <span class="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">${app.status}</span>
                                 </div>
                             </div>
                         `).join('')}
@@ -412,10 +397,10 @@
         function renderChatScreen(container) {
             container.innerHTML = `
                 <div class="p-6 flex flex-col h-full">
-                    <h3 class="font-bold text-gray-800 mb-3">Mensagens</h3>
+                    <h3 class="font-bold text-gray-800 mb-3 text-sm">Mensagens</h3>
                     <div class="space-y-3 flex-1">
-                        <div onclick="alert('Abrindo conversa com Dr. Carlos')" class="bg-white p-3 rounded-xl border border-gray-100 shadow-sm flex items-center space-x-3 cursor-pointer hover:bg-gray-50">
-                            <img src="https://images.unsplash.com/photo-1537368910025-700350fe46c7?auto=format&fit=crop&q=80&w=200" class="w-12 h-12 rounded-xl object-cover">
+                        <div onclick="alert('Abrindo conversa com Dr. Carlos')" class="bg-white p-3.5 rounded-2xl border border-gray-100 shadow-sm flex items-center space-x-3 cursor-pointer hover:glow-sm transition">
+                            <img src="https://images.unsplash.com/photo-1537368910025-700350fe46c7?auto=format&fit=crop&q=80&w=200" class="w-12 h-12 rounded-xl object-cover shadow">
                             <div class="flex-1">
                                 <div class="flex justify-between">
                                     <h5 class="text-xs font-bold text-gray-800">Dr. Carlos Silva</h5>
@@ -423,32 +408,32 @@
                                 </div>
                                 <p class="text-[11px] text-gray-500 truncate">Olá, confirme os cuidados pós-procedimento...</p>
                             </div>
-                            <span class="w-2 h-2 rounded-full bg-purple-600"></span>
+                            <span class="w-2.5 h-2.5 rounded-full bg-purple-600 glow-sm"></span>
                         </div>
                     </div>
                 </div>
             `;
         }
 
-        // --- TELA 7: CONFIGURAÇÕES (SETTINGS) ---
+        // --- TELA 7: CONFIGURAÇÕES ---
         function renderSettingsScreen(container) {
             container.innerHTML = `
                 <div class="p-6">
-                    <h3 class="font-bold text-gray-800 mb-4">Configurações</h3>
-                    <div class="space-y-2">
-                        <div class="bg-white p-3 rounded-xl border border-gray-100 flex justify-between items-center cursor-pointer">
+                    <h3 class="font-bold text-gray-800 mb-4 text-sm">Configurações</h3>
+                    <div class="space-y-2.5">
+                        <div class="bg-white p-3.5 rounded-2xl border border-gray-100 flex justify-between items-center cursor-pointer hover:glow-sm transition">
                             <span class="text-xs font-medium text-gray-700"><i class="fa-regular fa-user mr-2 text-purple-600"></i> Meu Perfil</span>
                             <i class="fa-solid fa-chevron-right text-xs text-gray-400"></i>
                         </div>
-                        <div class="bg-white p-3 rounded-xl border border-gray-100 flex justify-between items-center cursor-pointer">
+                        <div class="bg-white p-3.5 rounded-2xl border border-gray-100 flex justify-between items-center cursor-pointer hover:glow-sm transition">
                             <span class="text-xs font-medium text-gray-700"><i class="fa-regular fa-bell mr-2 text-purple-600"></i> Notificações</span>
-                            <input type="checkbox" checked class="accent-purple-600">
+                            <input type="checkbox" checked class="accent-purple-600 w-4 h-4 cursor-pointer">
                         </div>
-                        <div class="bg-white p-3 rounded-xl border border-gray-100 flex justify-between items-center cursor-pointer">
+                        <div class="bg-white p-3.5 rounded-2xl border border-gray-100 flex justify-between items-center cursor-pointer hover:glow-sm transition">
                             <span class="text-xs font-medium text-gray-700"><i class="fa-solid fa-globe mr-2 text-purple-600"></i> Idioma (Português)</span>
                             <i class="fa-solid fa-chevron-right text-xs text-gray-400"></i>
                         </div>
-                        <div class="bg-white p-3 rounded-xl border border-gray-100 flex justify-between items-center cursor-pointer">
+                        <div class="bg-white p-3.5 rounded-2xl border border-gray-100 flex justify-between items-center cursor-pointer hover:glow-sm transition">
                             <span class="text-xs font-medium text-gray-700"><i class="fa-regular fa-circle-question mr-2 text-purple-600"></i> Ajuda e Suporte</span>
                             <i class="fa-solid fa-chevron-right text-xs text-gray-400"></i>
                         </div>
