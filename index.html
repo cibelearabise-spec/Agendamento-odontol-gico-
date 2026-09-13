@@ -54,7 +54,7 @@
 
     <script>
         const dentists = [
-            { id: 1, name: "Dra. Mirna Liz", specialty: "Ortodontia", clinic: "Sorriso Perfeito Clinic", rating: 4.9, time: "09:00 AM - 05:00 PM", image: "dentista.jpg" },
+            { id: 1, name: "Dra. Mirna Liz", specialty: "Ortodontia", clinic: "Sorriso Perfeito Clinic", rating: 4.9, time: "09:00 AM - 05:00 PM", image: "tela.jpg" },
             { id: 2, name: "Dra. Ana Souza", specialty: "Implantes Dentários", clinic: "Dental Health Center", rating: 4.8, time: "10:00 AM - 06:00 PM", image: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=80&w=200" },
             { id: 3, name: "Dr. Marcos Lima", specialty: "Endodontia (Canal)", clinic: "Odonto Prime", rating: 4.7, time: "08:00 AM - 04:00 PM", image: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&q=80&w=200" }
         ];
@@ -169,14 +169,15 @@
                             <h4 class="font-bold text-gray-800 text-sm">Dentistas em Destaque</h4>
                             <span onclick="navigateTo('doctors')" class="text-xs text-purple-600 font-semibold cursor-pointer hover:underline">Ver mais</span>
                         </div>
-                        <div class="space-y-3">
+                        <div class="space-y-4">
                             ${dentists.map(d => `
                                 <div onclick="navigateTo('profile', ${d.id})" class="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm flex items-center space-x-4 cursor-pointer hover:border-purple-300 hover:glow-sm transition">
-                                    <img src="${d.image}" alt="${d.name}" class="w-20 h-20 rounded-2xl object-cover shadow-md">
+                                    <!-- Foto bem maior (w-24 h-24) -->
+                                    <img src="${d.image}" alt="${d.name}" class="w-24 h-24 rounded-2xl object-cover shadow-md flex-shrink-0">
                                     <div class="flex-1">
                                         <h5 class="text-sm font-bold text-gray-800">${d.name}</h5>
-                                        <p class="text-xs text-purple-600 font-semibold mt-0.5">${d.specialty}</p>
-                                        <p class="text-[11px] text-gray-400 mt-0.5">${d.clinic}</p>
+                                        <p class="text-xs text-purple-600 font-semibold mt-1">${d.specialty}</p>
+                                        <p class="text-[11px] text-gray-400 mt-1">${d.clinic}</p>
                                     </div>
                                 </div>
                             `).join('')}
